@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safar - Premium Indian Travel Itinerary Planner</title>
+  <meta name="description" content="Safar is a premium, interactive Indian travel itinerary planner. Generate detailed travel schedules, interactive maps, packing checklists, and customizable budget estimates for popular destinations in India.">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet CSS for Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+        
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-compass"></i></div>
+        <h1 class="logo-text">Safar<span>.</span></h1>
+      </div>
+      <div>
+        <span class="dest-badge"><i class="fa-solid fa-location-dot"></i> India Travel Guide</span>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      
+      <!-- Hero Section -->
+      <section class="hero animate-fade-in">
+        <h2>Craft Your Perfect Indian Journey</h2>
+        <p>Enter your travel details to generate a highly detailed, personalized day-by-day itinerary, interactive map routes, custom packing lists, and local budget trackers.</p>
+        <img src="hero.png" alt="Travel India Banner" style="max-width: 100%; height: auto; border-radius: var(--radius-md); margin-top: 24px; box-shadow: var(--shadow-md); border: 1px solid var(--border-color); max-height: 220px; object-fit: cover; width: 100%;">
+      </section>
+
+      <!-- Input Wizard Card -->
+      <section class="wizard-card glass animate-fade-in" id="wizard-section">
+        <form id="itinerary-form">
+          <div class="wizard-grid">
+            
+            <!-- Destination Selection -->
+            <div class="form-group">
+              <label for="destination"><i class="fa-solid fa-map-pin"></i> Where do you want to go?</label>
+              <select id="destination" class="input-field" required>
+                <option value="" disabled selected>Select an Indian travel destination</option>
+                <option value="agra">Agra (Taj Mahal & Mughal Heritage)</option>
+                <option value="ladakh">Leh-Ladakh (High Mountain Passes & Lakes)</option>
+                <option value="varanasi">Varanasi (Spiritual Ghats & Ancient Temples)</option>
+                <option value="kerala">Kerala Backwaters & Munnar Hills</option>
+                <option value="goa">Goa (Beaches, Portuguese Heritage & Nightlife)</option>
+                <option value="udaipur">Udaipur (Palaces, Romantic Lakes & Culture)</option>
+                <option value="hampi">Hampi (Vijayanagara Empire Ruins & Landscapes)</option>
+                <option value="manali">Manali (Solang Adventure, Snow & Valley Treks)</option>
+                <option value="ooty">Ooty (Toy Train, Tea Plantations & Misty Hills)</option>
+                <option value="darjeeling">Darjeeling (Sunrise Peaks, Monasteries & Tea Gardens)</option>
+                <option value="jaipur">Jaipur (Pink City, Historic Forts & Heritage)</option>
+                <option value="mumbai">Mumbai (Bollywood, Marine Drive & City Life)</option>
+                <option value="himalayas_sikkim">Sikkim & Gangtok (Himalayan Lakes & Monasteries)</option>
+                <option value="hampi_backup_replace_varanasi_or_munnar">Wayanad (Western Ghats, Caves & Waterfalls)</option>
+              </select>
+            </div>
+
+            <!-- Travel Duration -->
+            <div class="form-group">
+              <label for="duration-days"><i class="fa-regular fa-calendar-days"></i> Duration of Travel (1 - 10 Days)</label>
+              <input type="number" id="duration-days" class="input-field" min="1" max="10" value="4" required>
+            </div>
+
+            <!-- Travel Style / Vibe -->
+            <div class="form-group" style="grid-column: span 2;">
+              <label><i class="fa-solid fa-route"></i> Travel Vibe / Companion Style</label>
+              <div class="style-tiles">
+                <div class="style-tile">
+                  <input type="radio" id="style-solo" name="travel-style" value="solo" checked>
+                  <label for="style-solo" class="style-tile-label">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Solo Traveler</span>
+                  </label>
+                </div>
+                <div class="style-tile">
+                  <input type="radio" id="style-family" name="travel-style" value="family">
+                  <label for="style-family" class="style-tile-label">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Family Trip</span>
+                  </label>
+                </div>
+                <div class="style-tile">
+                  <input type="radio" id="style-couple" name="travel-style" value="couple">
+                  <label for="style-couple" class="style-tile-label">
+                    <i class="fa-solid fa-heart"></i>
+                    <span>Couple / Romantic</span>
+                  </label>
+                </div>
+                <div class="style-tile">
+                  <input type="radio" id="style-friends" name="travel-style" value="friends">
+                  <label for="style-friends" class="style-tile-label">
+                    <i class="fa-solid fa-user-group"></i>
+                    <span>Friends Group</span>
+                  </label>
+                </div>
+                <div class="style-tile">
+                  <input type="radio" id="style-adventure" name="travel-style" value="adventure">
+                  <label for="style-adventure" class="style-tile-label">
+                    <i class="fa-solid fa-person-hiking"></i>
+                    <span>Adventure Seeker</span>
+                  </label>
+                </div>
+                <div class="style-tile">
+                  <input type="radio" id="style-spiritual" name="travel-style" value="spiritual">
+                  <label for="style-spiritual" class="style-tile-label">
+                    <i class="fa-solid fa-dove"></i>
+                    <span>Spiritual Seekers</span>
+                  </label>
+                </div>
+                <div class="style-tile">
+                  <input type="radio" id="style-leisure" name="travel-style" value="leisure">
+                  <label for="style-leisure" class="style-tile-label">
+                    <i class="fa-solid fa-couch"></i>
+                    <span>Leisure / Relaxed</span>
+                  </label>
+                </div>
+                <div class="style-tile">
+                  <input type="radio" id="style-culture" name="travel-style" value="culture">
+                  <label for="style-culture" class="style-tile-label">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span>History & Culture</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Budget Level Selection -->
+            <div class="form-group" style="grid-column: span 2;">
+              <label><i class="fa-solid fa-wallet"></i> Budget Profile</label>
+              <div class="style-tiles" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="style-tile">
+                  <input type="radio" id="budget-low" name="budget-tier" value="budget" checked>
+                  <label for="budget-low" class="style-tile-label" style="justify-content: center;">
+                    <i class="fa-solid fa-coins"></i>
+                    <span>Budget / Backpacker</span>
+                  </label>
+                </div>
+                <div class="style-tile">
+                  <input type="radio" id="budget-mid" name="budget-tier" value="mid">
+                  <label for="budget-mid" class="style-tile-label" style="justify-content: center;">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <span>Mid-Range Standard</span>
+                  </label>
+                </div>
+                <div class="style-tile">
+                  <input type="radio" id="budget-high" name="budget-tier" value="luxury">
+                  <label for="budget-high" class="style-tile-label" style="justify-content: center;">
+                    <i class="fa-solid fa-gem"></i>
+                    <span>Luxury Premium</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Areas of Interest -->
+            <div class="form-group" style="grid-column: span 2;">
+              <label><i class="fa-solid fa-circle-nodes"></i> Select Your Interests (Select multiple)</label>
+              <div class="interests-grid">
+                
+                <div class="interest-item">
+                  <input type="checkbox" id="int-heritage" value="heritage" checked>
+                  <label for="int-heritage" class="interest-label">
+                    <i class="fa-solid fa-landmark"></i>
+                    <span>Monuments & History</span>
+                  </label>
+                </div>
+
+                <div class="interest-item">
+                  <input type="checkbox" id="int-nature" value="nature" checked>
+                  <label for="int-nature" class="interest-label">
+                    <i class="fa-solid fa-mountain-sun"></i>
+                    <span>Nature & Scenic</span>
+                  </label>
+                </div>
+
+                <div class="interest-item">
+                  <input type="checkbox" id="int-spiritual" value="spiritual">
+                  <label for="int-spiritual" class="interest-label">
+                    <i class="fa-solid fa-dharmachakra"></i>
+                    <span>Temples & Spiritual</span>
+                  </label>
+                </div>
+
+                <div class="interest-item">
+                  <input type="checkbox" id="int-adventure" value="adventure">
+                  <label for="int-adventure" class="interest-label">
+                    <i class="fa-solid fa-compass"></i>
+                    <span>Adventure Sports</span>
+                  </label>
+                </div>
+
+                <div class="interest-item">
+                  <input type="checkbox" id="int-leisure" value="leisure">
+                  <label for="int-leisure" class="interest-label">
+                    <i class="fa-solid fa-umbrella-beach"></i>
+                    <span>Beaches & Leisure</span>
+                  </label>
+                </div>
+
+                <div class="interest-item">
+                  <input type="checkbox" id="int-shopping" value="shopping">
+                  <label for="int-shopping" class="interest-label">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span>Bazaars & Shopping</span>
+                  </label>
+                </div>
+
+                <div class="interest-item">
+                  <input type="checkbox" id="int-food" value="food" checked>
+                  <label for="int-food" class="interest-label">
+                    <i class="fa-solid fa-utensils"></i>
+                    <span>Local Cuisine & Street Food</span>
+                  </label>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <div style="text-align: center;">
+            <button type="submit" class="btn-primary" id="submit-btn">
+              <span>Generate My Itinerary</span>
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Dashboard Itinerary Details (Hidden Initially) -->
+      <section id="itinerary-dashboard" class="hidden animate-fade-in">
+        
+        <div class="dashboard-grid">
+          
+          <!-- Left Column (Itinerary Timelines, Headers) -->
+          <div class="dashboard-left">
+            
+            <!-- Destination Details Header -->
+            <div class="dest-header-card glass" id="dest-header-info">
+              <!-- Content filled dynamically by app.js -->
+            </div>
+
+            <!-- Day Selector Cards -->
+            <div class="day-selector-card glass" id="day-selector-container">
+              <div class="day-pills" id="day-pills-container">
+                <!-- Day Pills filled dynamically -->
+              </div>
+            </div>
+
+            <!-- Detailed Day Timeline -->
+            <div class="timeline-card glass" id="timeline-detail-card">
+              <div class="timeline-header">
+                <h3 id="current-day-label">Day 1 Schedule</h3>
+                <span class="day-theme-badge" id="current-day-theme">Exploration & Sightseeing</span>
+              </div>
+              <div class="timeline-container" id="timeline-events-container">
+                <!-- Timeline items filled dynamically -->
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="action-bar">
+              <button class="btn-secondary" id="edit-plan-btn"><i class="fa-solid fa-sliders"></i> Adjust Options</button>
+              <button class="btn-secondary" id="share-btn"><i class="fa-solid fa-share-nodes"></i> Copy Share Link</button>
+              <button class="btn-primary" id="print-btn"><i class="fa-solid fa-file-pdf"></i> Export / Print Itinerary</button>
+            </div>
+
+          </div>
+
+          <!-- Right Column (Map, Budget, Packing, Tips) -->
+          <div class="dashboard-right">
+            
+            <!-- Map Canvas -->
+            <div class="map-card glass">
+              <div class="map-header">
+                <h3><i class="fa-solid fa-route"></i> Live Sightseeing Map</h3>
+                <span class="activity-badge" id="map-route-indicator" style="background: rgba(245, 158, 11, 0.1); color: var(--accent-gold);">Day 1 Route</span>
+              </div>
+              <div id="map"></div>
+            </div>
+
+            <!-- Interactive Budget Tracker -->
+            <div class="budget-card glass" id="budget-tracker-card">
+              <div class="budget-header">
+                <h3><i class="fa-solid fa-calculator"></i> Budget Customizer</h3>
+                <span class="budget-tier" id="budget-tier-badge">Mid Range</span>
+              </div>
+              
+              <div class="budget-sliders">
+                <!-- Sliders for Accommodation, Transport, Dining, Misc -->
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <span class="slider-label"><i class="fa-solid fa-hotel"></i> Accommodation</span>
+                    <span class="slider-value" id="val-accommodation">₹0</span>
+                  </div>
+                  <input type="range" class="range-slider" id="slider-accommodation" min="0" max="50000" step="500">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <span class="slider-label"><i class="fa-solid fa-car-side"></i> Transport & Travel</span>
+                    <span class="slider-value" id="val-transport">₹0</span>
+                  </div>
+                  <input type="range" class="range-slider" id="slider-transport" min="0" max="30000" step="200">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <span class="slider-label"><i class="fa-solid fa-bowl-rice"></i> Food & Dining</span>
+                    <span class="slider-value" id="val-dining">₹0</span>
+                  </div>
+                  <input type="range" class="range-slider" id="slider-dining" min="0" max="25000" step="200">
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <span class="slider-label"><i class="fa-solid fa-ticket"></i> Sights Entry Fees</span>
+                    <span class="slider-value" id="val-attractions">₹0</span>
+                  </div>
+                  <!-- Attractions fee is computed, can't slide it directly as it's set by entries -->
+                  <input type="range" class="range-slider" id="slider-attractions" min="0" max="15000" step="100" disabled>
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-header">
+                    <span class="slider-label"><i class="fa-solid fa-gift"></i> Shopping & Misc</span>
+                    <span class="slider-value" id="val-misc">₹0</span>
+                  </div>
+                  <input type="range" class="range-slider" id="slider-misc" min="0" max="20000" step="200">
+                </div>
+              </div>
+
+              <!-- Budget calculations -->
+              <div class="budget-summary-box">
+                <div class="budget-row">
+                  <span>Itinerary Days:</span>
+                  <span id="budget-days-count">0 Days</span>
+                </div>
+                <div class="budget-row grand-total">
+                  <span>Estimated Total:</span>
+                  <span id="budget-grand-total">₹0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Packing Checklist Card -->
+            <div class="packing-card glass">
+              <div class="packing-header">
+                <h3><i class="fa-solid fa-suitcase-rolling"></i> Packing checklist</h3>
+                <span class="packing-progress" id="packing-progress-bar">0 / 0 Packed</span>
+              </div>
+              <div class="packing-list" id="packing-checklist-items">
+                <!-- Checkbox elements filled dynamically -->
+              </div>
+            </div>
+
+            <!-- Local Guide (Cuisine & Regional Tips) -->
+            <div class="guide-card glass">
+              <div class="guide-tabs">
+                <button class="guide-tab-btn active" id="tab-btn-cuisine" onclick="switchGuideTab('cuisine')">
+                  <i class="fa-solid fa-mug-hot"></i> Local Cuisines
+                </button>
+                <button class="guide-tab-btn" id="tab-btn-tips" onclick="switchGuideTab('tips')">
+                  <i class="fa-solid fa-lightbulb"></i> Local Tips
+                </button>
+              </div>
+              
+              <!-- Local Cuisines Tab Content -->
+              <div class="guide-content-panel active" id="panel-cuisine">
+                <div class="cuisine-list" id="guide-cuisine-list">
+                  <!-- Filled dynamically -->
+                </div>
+              </div>
+
+              <!-- Local Tips Tab Content -->
+              <div class="guide-content-panel" id="panel-tips">
+                <div class="tips-list" id="guide-tips-list">
+                  <!-- Filled dynamically -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2026 Safar Itinerary Planner. Pair-programmed with love. <a href="#"><i class="fa-solid fa-shield-halved"></i> Privacy</a> | <a href="#"><i class="fa-solid fa-headset"></i> Support</a></p>
+    </footer>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast-container">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toast-message">Itinerary generated!</span>
+  </div>
+
+  <!-- Leaflet Map Script -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""></script>
+  
+  <!-- App JS files -->
+  <script src="data.js"></script>
+  <script src="generator.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
